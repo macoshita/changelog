@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "changelog": "bin/changelog"
+    "changelog": "./bin/changelog"
   },
   "scripts": {
     "test": "exit 0"
