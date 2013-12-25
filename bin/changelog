@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+
+program
+  .option('-o, --output', '出力先')
+  .option('-t, --template', 'htmlテンプレート')
+  .parse(process.argv);
+
+console.log(program.output);
+console.log(program.template);
+console.log(program.args);
