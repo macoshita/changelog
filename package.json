@@ -17,10 +17,5 @@
   },
   "homepage": "https://github.com/macoshita/changelog",
   "dependencies": {
-    "commander": "~2.1.0",
-    "string": "~1.7.0",
-    "jade": "~1.0.0",
-    "moment": "~2.5.0",
-    "wrench": "~1.5.4"
   }
 }
