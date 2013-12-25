@@ -3,13 +3,17 @@ html
   head
     meta(charset="UTF-8")
     title ChangeLog
-    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css')
+    link(rel='stylesheet', href='vendor/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='vendor/bootstrap/dist/css/bootstrap-theme.min.css')
+    script(src='vendor/bootstrap/dist/js/bootstrap.min.js')
+    script(src='vendor/jquery/jquery.min.js')
   body
-    h1 ChangeLog
-    table.table
-      each log in logs
-        tr
-          td= log.date.format('YYYY/MM/DD')
-          td= log.comment
-          td= log.author
+    .container
+      h1 ChangeLog
+      table.table
+        each log in logs
+          tr
+            td= log.date.format('YYYY/MM/DD')
+            td= log.comment
+            td= log.author
 
