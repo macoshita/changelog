@@ -1,24 +1,21 @@
 {
   "name": "changelog",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "./bin/changelog",
   "bin": {
     "changelog": "./bin/changelog"
   },
-  "scripts": {
-    "test": "exit 0"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/macoshita/node-changelog.git"
+    "url": "https://github.com/macoshita/changelog.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/macoshita/node-changelog/issues"
+    "url": "https://github.com/macoshita/changelog/issues"
   },
-  "homepage": "https://github.com/macoshita/node-changelog",
+  "homepage": "https://github.com/macoshita/changelog",
   "dependencies": {
     "commander": "~2.1.0",
     "string": "~1.7.0",
