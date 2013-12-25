@@ -5,11 +5,11 @@
 var fs = require('fs');
 var path = require('path');
 var spawn = require('child_process').spawn;
-var cpr = require('cpr');
 var jade = require('jade');
 var moment = require('moment');
 var program = require('commander');
 var S = require('string');
+var wrench = require('wrench');
 
 program
   .option('-o, --output <path>', 'Output Directory')
@@ -53,19 +53,19 @@ gitlog.on('close', function(code) {
     return;
   }
 
-  cpr(program.template, program.output, { deleteFirst: true }, function(err) {
+  wrench.copyDirSyncRecursive(program.template, program.output, {
+    forceDelete: true
+  });
+
+  jade.renderFile(program.template + '/index.jade', { logs: logs }, function(err, html) {
     if (err) throw err;
 
-    jade.renderFile(program.template + '/index.jade', { logs: logs }, function(err, html) {
+    var output = path.join(program.output, 'index.html');
+
+    fs.writeFile(output, html, function(err) {
       if (err) throw err;
 
-      var output = path.join(program.output, 'index.html');
-
-      fs.writeFile(output, html, function(err) {
-        if (err) throw err;
-
-        console.log('output to ' + output);
-      });
+      console.log('output to ' + output);
     });
   });
 });
