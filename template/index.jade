@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title ChangeLog
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css')
+  body
+    h1 ChangeLog
+    table.table
+      each log in logs
+        tr
+          td= log.date.format('YYYY/MM/DD')
+          td= log.comment
+          td= log.author
+

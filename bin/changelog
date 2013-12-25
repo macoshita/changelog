@@ -2,22 +2,33 @@
 
 'use strict';
 
+var fs = require('fs');
 var path = require('path');
-var program = require('commander');
 var spawn = require('child_process').spawn;
+var cpr = require('cpr');
+var jade = require('jade');
+var moment = require('moment');
+var program = require('commander');
+var S = require('string');
 
 program
-  .option('-o, --output <path>', 'Output Path')
-  .option('-t, --template <path>', 'Template Dir')
+  .option('-o, --output <path>', 'Output Directory')
+  .option('-t, --template <path>', 'Template Directory')
   .parse(process.argv);
 
-program.output = program.output || "./changelog.html";
-program.output = program.template || path.join(__dirname, "../template.jade");
+program.output = program.output || "./changelog";
+program.template = program.template || path.join(__dirname, "../template");
 
-var gitlog = spawn('git', ['log', '--date=iso', '--pretty=format:"%ad","%s","%an"']);
+var gitlog = spawn('git', [
+  'log', 
+  '--grep', '^!', 
+  '--date', 'iso', 
+  '--pretty=format:"%ad","%s","%an"'
+]);
+var buffer = '';
 
 gitlog.stdout.on('data', function(data) {
-  console.log('stdout: ' + data);
+  buffer += data;
 });
 
 gitlog.stderr.on('data', function(data) {
@@ -25,5 +36,36 @@ gitlog.stderr.on('data', function(data) {
 });
 
 gitlog.on('close', function(code) {
-  console.log('gitlog exited with code ' + code);
+  var csv = S(buffer).parseCSV(',', '"', '\\', '\n');
+  var logs = [];
+
+  csv.forEach(function(row) {
+    if (row.length === 3) {
+      logs.push({
+        date: moment(row[0]),
+        comment: row[1].substring(1),
+        author: row[2],
+      });
+    }
+  });
+
+  if (logs.length === 0) {
+    return;
+  }
+
+  cpr(program.template, program.output, { deleteFirst: true }, function(err) {
+    if (err) throw err;
+
+    jade.renderFile(program.template + '/index.jade', { logs: logs }, function(err, html) {
+      if (err) throw err;
+
+      var output = path.join(program.output, 'index.html');
+
+      fs.writeFile(output, html, function(err) {
+        if (err) throw err;
+
+        console.log('output to ' + output);
+      });
+    });
+  });
 });
