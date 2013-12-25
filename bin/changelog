@@ -1,12 +1,29 @@
 #!/usr/bin/env node
 
+'use strict';
+
+var path = require('path');
 var program = require('commander');
+var spawn = require('child_process').spawn;
 
 program
-  .option('-o, --output', '出力先')
-  .option('-t, --template', 'htmlテンプレート')
+  .option('-o, --output <path>', 'Output Path')
+  .option('-t, --template <path>', 'Template Dir')
   .parse(process.argv);
 
-console.log(program.output);
-console.log(program.template);
-console.log(program.args);
+program.output = program.output || "./changelog.html";
+program.output = program.template || path.join(__dirname, "../template.jade");
+
+var gitlog = spawn('git', ['log', '--date=iso', '--pretty=format:"%ad","%s","%an"']);
+
+gitlog.stdout.on('data', function(data) {
+  console.log('stdout: ' + data);
+});
+
+gitlog.stderr.on('data', function(data) {
+  console.log('stderr: ' + data);
+});
+
+gitlog.on('close', function(code) {
+  console.log('gitlog exited with code ' + code);
+});
