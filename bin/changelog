@@ -8,7 +8,6 @@ var spawn = require('child_process').spawn;
 var jade = require('jade');
 var moment = require('moment');
 var program = require('commander');
-var S = require('string');
 var wrench = require('wrench');
 
 program
@@ -23,7 +22,7 @@ var gitlog = spawn('git', [
   'log', 
   '--grep', '^!', 
   '--date', 'iso', 
-  '--pretty=format:"%ad","%s","%an"'
+  '--pretty=format:%ad\t%s\t%an__EOR__'
 ]);
 var buffer = '';
 
@@ -36,15 +35,16 @@ gitlog.stderr.on('data', function(data) {
 });
 
 gitlog.on('close', function(code) {
-  var csv = S(buffer).parseCSV(',', '"', '\\', '\n');
   var logs = [];
 
-  csv.forEach(function(row) {
-    if (row.length === 3) {
+  buffer.split("__EOR__\n").forEach(function(row) {
+    var columns = row.split('\t');
+
+    if (columns.length === 3) {
       logs.push({
-        date: moment(row[0]),
-        comment: row[1].substring(1),
-        author: row[2],
+        date: moment(columns[0]),
+        comment: columns[1].substring(1),
+        author: columns[2],
       });
     }
   });
