@@ -11,12 +11,9 @@ var program = require('commander');
 var wrench = require('wrench');
 
 program
-  .option('-o, --output <path>', 'Output Directory')
-  .option('-t, --template <path>', 'Template Directory')
+  .option('-o, --output <path>', 'Output Directory', './changes')
+  .option('-t, --template <path>', 'Template Directory', path.join(__dirname, "../template"))
   .parse(process.argv);
-
-program.output = program.output || "./changes";
-program.template = program.template || path.join(__dirname, "../template");
 
 var gitlog = spawn('git', [
   'log', 
@@ -37,8 +34,8 @@ gitlog.stderr.on('data', function(data) {
 gitlog.on('close', function(code) {
   var logs = [];
 
-  buffer.split("__EOR__\n").forEach(function(row) {
-    var columns = row.split('\t');
+  buffer.split("__EOR__").forEach(function(row) {
+    var columns = row.trim().split('\t');
 
     if (columns.length === 3) {
       logs.push({
